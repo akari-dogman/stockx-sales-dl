@@ -7,6 +7,15 @@ import csv
 # Do you hate how I code? Fork and pull request. You won't, no balls.
 # @dogman_aud
 
+def writeData(name, saleJSON):
+    with open('{}.csv'.format(name),'w') as outputCSV:
+        csvWriter = csv.writer(outputCSV)
+        csvWriter.writerow(['Date','Size',"Price"])
+        for item in saleJSON['ProductActivity']:
+            csvWriter.writerow([item['createdAt'],item['shoeSize'],item['amount']])
+            # uncomment the following if you like terminal spam
+            # print('Wrote: Date: {} | Size: {} | Amount: {}'.format(item['createdAt'],item['shoeSize'],item['amount']))
+
 print('')
 print('StockX Data Downloader')
 print('by @dogman_aud')
@@ -20,15 +29,7 @@ name = firstSearch['url']
 objectid = firstSearch['objectID']
 saleRAW = requests.get('https://stockx.com/api/products/{}/activity?state=480&currency=USD&limit=100000000&page=1&sort=createdAt&order=DESC'.format(objectid))
 saleJSON = json.loads(saleRAW.text)
-
-
-with open('{}.csv'.format(name),'w') as outputCSV:
-    csvWriter = csv.writer(outputCSV)
-    csvWriter.writerow(['Date','Size',"Price"])
-    for item in saleJSON['ProductActivity']:
-        csvWriter.writerow([item['createdAt'],item['shoeSize'],item['amount']])
-        # uncomment the following if you like terminal spam
-        # print('Wrote: Date: {} | Size: {} | Amount: {}'.format(item['createdAt'],item['shoeSize'],item['amount']))
+writeData(name, saleJSON)
 
 print('')
 print('Success: wrote {}.csv'.format(name))
